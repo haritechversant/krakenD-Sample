@@ -1,0 +1,14 @@
+{
+  "utility": {
+      "port": 8080,
+      "default_hosts": [
+          "http://10.1.0.111:8080"
+      ]
+  },
+  "partner": {
+      "port": 8031,
+      "default_hosts": [
+          "http://10.1.0.90:8031"
+      ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+    "utility_endpoints": [
+        {
+            "endpoint": "/utility",
+            "backend": "/api/v1.0/countries",
+            "method": "GET"
+
+        },
+        {
+            "endpoint": "/genres",
+            "backend": "/api/v1.0/genres",
+            "method": "POST"
+
+        }
+    ],
+    "partner_endpoints": [
+        {
+            "endpoint": "/partner",
+            "backend": "/api/v1/health",
+            "method": "GET"
+        }
+    ]
+}
