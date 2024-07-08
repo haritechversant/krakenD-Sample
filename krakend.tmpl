@@ -2,9 +2,13 @@
     "$schema": "https://www.krakend.io/schema/v2.6/krakend.json",
     "version": 3,
     "endpoints": [
-
-
-        {{ range $idx, $endpoint := .endpoints.utility_endpoints }}
+        {{- $first := true -}}
+        {{- range $serviceName, $serviceConfig := $.service }}
+            {{- $endpointsKey := print $serviceName "_endpoints" -}}
+            {{- $endpoints := index $.endpoints $endpointsKey -}}
+            {{- range $idx, $endpoint := $endpoints }}
+                {{- if not $first }},{{ end }}
+                {{- $first = false -}}
         {
             "endpoint": "{{ $endpoint.endpoint }}",
             "method": "{{ $endpoint.method }}",
@@ -13,41 +17,18 @@
                 {
                     "url_pattern": "{{ $endpoint.backend }}",
                     "method": "{{ $endpoint.method }}",
-                    "host": {{ marshal $.service.utility.default_hosts }},
+                    "host": {{ marshal $serviceConfig.default_hosts }},
                     "extra_config": {
                         "backend/http": {
-                            "return_error_details": "utility_backend_errors"
+                            "return_error_details": "{{ $serviceName }}_backend_errors"
                         }
                     }
                 }
             ],
             "output_encoding": "no-op"
-        }{{ if ne $idx (sub (len $.endpoints.utility_endpoints) 1) }},{{ end }}
-        {{ end }},
-
-
-        {{ range $idx, $endpoint := .endpoints.partner_endpoints }}
-        {
-            "endpoint": "{{ $endpoint.endpoint }}",
-            "method": "{{ $endpoint.method }}",
-            "timeout": "100s",
-            "backend": [
-                {
-                    "url_pattern": "{{ $endpoint.backend }}",
-                    "method": "{{ $endpoint.method }}",
-                    "host": {{ marshal $.service.partner.default_hosts }},
-                    "extra_config": {
-                        "backend/http": {
-                            "return_error_details": "partner_backend_errors"
-                        }
-                    }
-                }
-            ],
-            "output_encoding": "no-op"
-        }{{ if ne $idx (sub (len $.endpoints.partner_endpoints) 1) }},{{ end }}
-        {{ end }}
-
-
+        }
+            {{- end }}
+        {{- end }}
     ],
     "extra_config": {{ marshal .extra_config }}
 }
